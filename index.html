@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zentra — Browser</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --bg: #0f0f11;
+      --surface: #16161a;
+      --surface-hover: #1e1e24;
+      --text: #e0e0e5;
+      --text-muted: #8a8a98;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --border: #27272e;
+      --url-bar: #1c1c23;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8f9fc;
+      --surface: #ffffff;
+      --surface-hover: #f1f3f9;
+      --text: #111015;
+      --text-muted: #6b7280;
+      --accent: #4f46e5;
+      --accent-hover: #6366f1;
+      --border: #e2e8f0;
+      --url-bar: #f1f5f9;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      height: 54px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 10px;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-win {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .btn-win.close   { background: #ff5f57; }
+    .btn-win.min     { background: #febc2e; }
+    .btn-win.max     { background: #28c840; }
+
+    .nav-buttons {
+      display: flex;
+      gap: 4px;
+    }
+
+    .nav-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.13s;
+    }
+
+    .nav-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    #url-bar-container {
+      flex: 1;
+      max-width: 780px;
+      position: relative;
+    }
+
+    #url-bar {
+      width: 100%;
+      height: 38px;
+      padding: 0 16px 0 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--url-bar);
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    #url-bar:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+    }
+
+    #url-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 17px;
+    }
+
+    #theme-toggle {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #theme-toggle:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+
+    footer {
+      height: 28px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="window-controls">
+    <div class="btn-win close"></div>
+    <div class="btn-win min"></div>
+    <div class="btn-win max"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" id="back" disabled><i class="fa-solid fa-angle-left"></i></button>
+    <button class="nav-btn" id="forward" disabled><i class="fa-solid fa-angle-right"></i></button>
+    <button class="nav-btn" id="reload"><i class="fa-solid fa-rotate-right"></i></button>
+  </div>
+
+  <div id="url-bar-container">
+    <i class="fa-solid fa-lock" id="url-icon"></i>
+    <input type="text" id="url-bar" value="https://www.example.com" spellcheck="false"/>
+  </div>
+
+  <button id="theme-toggle" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+</header>
+
+<main>
+  <iframe id="browser-frame" src="https://www.example.com" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals"></iframe>
+</main>
+
+<footer>
+  <div>Zentra Browser ・ Preview</div>
+  <div id="status">Ready</div>
+</footer>
+
+<script>
+const frame = document.getElementById('browser-frame');
+const urlBar = document.getElementById('url-bar');
+const backBtn = document.getElementById('back');
+const fwdBtn = document.getElementById('forward');
+const reloadBtn = document.getElementById('reload');
+const themeToggle = document.getElementById('theme-toggle');
+const status = document.getElementById('status');
+
+function loadURL(url) {
+  try {
+    let finalUrl = url.trim();
+    if (!finalUrl) return;
+    
+    if (!finalUrl.includes('://')) {
+      if (finalUrl.includes('.') && !finalUrl.includes(' ')) {
+        finalUrl = 'https://' + finalUrl;
+      } else {
+        finalUrl = 'https://www.google.com/search?q=' + encodeURIComponent(finalUrl);
+      }
+    }
+
+    urlBar.value = finalUrl;
+    frame.src = finalUrl;
+    status.textContent = 'Loading...';
+  } catch (e) {
+    status.textContent = 'Error';
+  }
+}
+
+urlBar.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    loadURL(urlBar.value);
+  }
+});
+
+backBtn.onclick = () => frame.contentWindow.history.back();
+fwdBtn.onclick  = () => frame.contentWindow.history.forward();
+reloadBtn.onclick = () => frame.contentWindow.location.reload();
+
+frame.addEventListener('load', () => {
+  status.textContent = 'Done';
+  try {
+    urlBar.value = frame.contentWindow.location.href;
+  } catch (e) {
+    // cross-origin → show last known url
+  }
+
+  try {
+    backBtn.disabled = !frame.contentWindow.history.length || frame.contentWindow.history.current === 0;
+    fwdBtn.disabled = true; // simplistic
+  } catch {}
+});
+
+themeToggle.onclick = () => {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') !== 'light';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  themeToggle.innerHTML = `<i class="fa-solid fa-${isDark ? 'sun' : 'moon'}"></i>`;
+};
+
+// Start
+loadURL('https://www.example.com');
+</script>
+</body>
+</html>
