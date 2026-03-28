@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card h2 {
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+    }
+
+    .card p {
+      color: #cbd5f5;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .card a {
+      text-decoration: none;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <h1>Daniel's Hub</h1>
+      <p>Projects • Games • Experiments</p>
+    </header>
+
+    <div class="grid">
+
+      <div class="card" onclick="location.href='/blog'">
+        <h2>📝 Blog</h2>
+        <p>Thoughts, ideas, and things I'm learning.</p>
+        <a href="/blog">Enter →</a>
+      </div>
+
+      <div class="card" onclick="location.href='/projects'">
+        <h2>💻 Projects</h2>
+        <p>My coding projects and experiments.</p>
+        <a href="/projects">Explore →</a>
+      </div>
+
+      <div class="card" onclick="location.href='/games'">
+        <h2>🎮 Games</h2>
+        <p>Fun stuff I've built or play around with.</p>
+        <a href="/games">Play →</a>
+      </div>
+
+      <div class="card" onclick="location.href='/about'">
+        <h2>👤 About Me</h2>
+        <p>Who I am and what I’m working toward.</p>
+        <a href="/about">Read →</a>
+      </div>
+
+    </div>
+
+    <footer>
+      © 2026 Daniel • Built with GitHub Pages
+    </footer>
+
+  </div>
+</body>
+</html>
